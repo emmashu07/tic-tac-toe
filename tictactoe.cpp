@@ -6,6 +6,7 @@ void printBoard();
 void play();
 bool checkWin(int player);
 bool checkTie();
+bool wins();
 
 int board[3][3];
 const int X_TURN = 1;
@@ -14,15 +15,40 @@ const int BLANK = 0;
 const int X_MOVE = 1;
 const int O_MOVE = 2;
 int turn = X_TURN;
-char input[2];
+int xWins = 0;
+int oWins = 0;
+char input[5];
+bool stillPlaying = true;
+char status[5];
+bool stop = false;
 
 
 int main() {
 	printBoard();	
 	cout << "Welcome to Tic-Tac-Toe, enter a number, 1-3, followed by a letter, a-c, to begin." << endl;
-	while (!checkWin(X_MOVE) && !checkWin(O_MOVE) && !checkTie()) {
-		cin >> input;
-		play();	
+	while(stillPlaying) {
+		while (!stop) {
+			cin >> input;
+			// TODO fix input checking
+			while (input[3] != '\0' && input[0] > 3 && input[0] < 0 && input[1] > (int)('c') && input[1] < (int)('a')) {
+				cout << "Please enter a number, 1-3, followed by a letter, a-c (e.g. 1a)" << endl;
+			}
+			play();
+			stop = wins();
+		}
+		cout << "Keep playing? Y/N" << endl;
+		cin >> status;
+		// TODO reject other input
+		if(status[0] == 'n' || status[0] == 'N') {
+			stillPlaying = false;
+		}	
+		for(int i = 0; i < 3; i++) {
+			for(int j = 0; j < 3; j++) {
+				board[i][j] = BLANK;
+			}
+		}
+		printBoard();
+		stop = false;
 	}
 	return 0;
 }
@@ -50,19 +76,21 @@ void printBoard() {
 void play() {
 	int second = (int)(input[0] - '1');
 	int first = (int)(input[1] - 'a');
-	if(turn == X_TURN && board[first][second] == BLANK) {	
-		board[first][second] = X_MOVE;
-	}
-	else if (turn == O_TURN && board[first][second] == BLANK) {
-		board[first][second] = O_MOVE;
+	if(board[first][second] == BLANK) {
+		if(turn == X_TURN) {	
+			board[first][second] = X_MOVE;
+			turn = O_TURN;
+		}
+		else if (turn == O_TURN) {
+			board[first][second] = O_MOVE;
+			turn = X_TURN;
+		}
+	}	
+	else {
+		cout << "There's a piece already there." << endl;
 	}
 	printBoard();	
-	if (turn == X_TURN) {
-		turn = O_TURN;
-	}
-	else {
-		turn = X_TURN;
-	}
+	
 }
 
 bool checkWin(int player) {
@@ -103,5 +131,26 @@ bool checkTie() {
 	}
 	return true;
 }
+
+bool wins() {
+	if(checkWin(X_MOVE)) {
+		cout << "X wins!" << endl;
+		xWins++;
+		cout << "X has won " << xWins << " times." << endl;
+		return true;
+	}
+	else if(checkWin(O_MOVE)) {
+		cout << "O wins!" << endl;
+		oWins++;
+		cout << "O has won " << oWins << " times." << endl;
+		return true;
+	}
+	else if(checkTie()) {
+		cout << "Tie!" << endl;
+		return true;
+	}
+	return false;
+}
+		
 
 
