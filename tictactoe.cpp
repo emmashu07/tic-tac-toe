@@ -2,48 +2,41 @@
 
 using namespace std;
 
-//int** clearBoard(int grid[3][3]);
-void printBoard(int grid[3][3]);
-void play(char in[2], int grid[3][3]);
+void printBoard();
+void play();
+bool checkWin(int player);
+bool checkTie();
 
 int board[3][3];
-int x = 1;
-int o = 2;
-int blank = 0;
-int player = 1;
+const int X_TURN = 1;
+const int O_TURN = 2;
+const int BLANK = 0;
+const int X_MOVE = 1;
+const int O_MOVE = 2;
+int turn = X_TURN;
 char input[2];
-bool xWin = false;
-bool oWin = false;
-bool tie = false;
+
 
 int main() {
-	printBoard(board);	
+	printBoard();	
 	cout << "Welcome to Tic-Tac-Toe, enter a number, 1-3, followed by a letter, a-c, to begin." << endl;
-	while (!xWin && !oWin && !tie) {
+	while (!checkWin(X_MOVE) && !checkWin(O_MOVE) && !checkTie()) {
 		cin >> input;
-		play(input, board);
-		printBoard(board);
-		//checkWin(player);
-		if (player == x) {
-			player = o;
-		}
-		else {
-			player = x;
-		}
+		play();	
 	}
 	return 0;
 }
 
-void printBoard(int grid[3][3]) {
+void printBoard() {
 	cout << "\t1\t2\t3" << endl;
 	for(int i = 0; i < 3; i++) {	
 		cout << (char)('a' + i);	
 		for(int j = 0; j < 3; j++) {
 			cout << '\t';	
-			if(grid[i][j] == x) {
+			if(board[i][j] == X_MOVE) {
 				cout << 'X';
 			}
-			else if(grid[i][j] == o) {
+			else if(board[i][j] == O_MOVE) {
 				cout << 'O';
 			}
 			else {
@@ -54,23 +47,61 @@ void printBoard(int grid[3][3]) {
 	}
 }
 
-void play(char in[2], int grid[3][3]) {
-	int first = in[0] - 1;
-	int second = (int)(in[1] - 'a');
-	if(player == x && grid[first][second] == blank) {	
-		grid[first][second] = x;
+void play() {
+	int second = (int)(input[0] - '1');
+	int first = (int)(input[1] - 'a');
+	if(turn == X_TURN && board[first][second] == BLANK) {	
+		board[first][second] = X_MOVE;
 	}
-	else if (player == o && grid[first][second] == blank) {
-		grid[first][second] = o;
+	else if (turn == O_TURN && board[first][second] == BLANK) {
+		board[first][second] = O_MOVE;
 	}
-	printBoard(grid);
+	printBoard();	
+	if (turn == X_TURN) {
+		turn = O_TURN;
+	}
+	else {
+		turn = X_TURN;
+	}
 }
 
-/*int** clearBoard(int grid[3][3]) {
-	for(int i = 0; i < 3; i++) {
-	       for(int j = 0; j < 3; j++) {
-	       		grid[i][j] = blank;
-	       }
+bool checkWin(int player) {
+	if(board[1][1] == player && board[0][0] == player && board[2][2] == player) {
+		return true;
 	}
-	return grid;	
-}*/
+	else if(board[1][1] == player && board[2][0] == player && board[0][2] == player) {
+		return true;
+	}
+	else if(board[1][1] == player && board[0][1] == player && board[2][1] == player) {
+		return true;
+	}
+	else if(board[1][1] == player && board[1][0] == player && board[1][2] == player) {
+		return true;
+	}
+	else if(board[0][0] == player && board[0][1] == player && board[0][2] == player) {
+		return true;
+	}
+	else if(board[0][0] == player && board[1][0] == player && board[2][0] == player) {
+		return true;
+	}
+	else if(board[2][0] == player && board[2][1] == player && board[2][2] == player) {
+		return true;
+	}
+	else if(board[0][2] == player && board[1][2] == player && board[2][2] == player) {
+		return true;
+	}
+	return false;
+}
+
+bool checkTie() {
+	for(int row = 0; row < 3; row++) {
+		for(int column = 0; column < 3; column++) {
+		       if(board[row][column] == BLANK) {
+		       	return false;
+	 		}		
+		}
+	}
+	return true;
+}
+
+
