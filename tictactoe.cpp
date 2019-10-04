@@ -1,6 +1,9 @@
 #include <iostream>
+#include <cstring>
 
 using namespace std;
+
+//Emma Shu, 10/3/2019: Console game of Tic-Tac-Toe, played against yourself.
 
 void printBoard();
 void play();
@@ -28,23 +31,26 @@ int main() {
 	cout << "Welcome to Tic-Tac-Toe, enter a number, 1-3, followed by a letter, a-c, to begin." << endl;
 	while(stillPlaying) {
 		while (!stop) {
-			cin >> input;
-			// TODO fix input checking
-			while (input[3] != '\0' && input[0] > 3 && input[0] < 0 && input[1] > (int)('c') && input[1] < (int)('a')) {
-				cout << "Please enter a number, 1-3, followed by a letter, a-c (e.g. 1a)" << endl;
+			cin >> input;	
+			while (strlen(input) > 2 || input[0] > '3' || input[0] < '1' || input[1] > 'c' || input[1] < 'a' || !isalpha(input[1]) || !isdigit(input[0])) {
+				cout << "Please enter a number, 1-3, followed by a letter, a-c (e.g. 1a)" << endl; // Rejected conditions.
+                cin >> input;
 			}
 			play();
-			stop = wins();
+			stop = wins(); // Once a win or tie occurs, move on.
 		}
 		cout << "Keep playing? Y/N" << endl;
 		cin >> status;
-		// TODO reject other input
+		if(status[0] != 'n' && status[0] != 'N' && status[0] != 'y' && status[0] != 'Y' && strlen(status) > 1) {
+            cout << "Please enter Y/N" << endl;
+            cin >> status;
+        }
 		if(status[0] == 'n' || status[0] == 'N') {
 			stillPlaying = false;
 		}	
 		for(int i = 0; i < 3; i++) {
 			for(int j = 0; j < 3; j++) {
-				board[i][j] = BLANK;
+				board[i][j] = BLANK; // Reset board.
 			}
 		}
 		printBoard();
@@ -73,10 +79,10 @@ void printBoard() {
 	}
 }
 
-void play() {
+void play() { // A turn.
 	int second = (int)(input[0] - '1');
 	int first = (int)(input[1] - 'a');
-	if(board[first][second] == BLANK) {
+	if(board[first][second] == BLANK) { // Check if move is legal.
 		if(turn == X_TURN) {	
 			board[first][second] = X_MOVE;
 			turn = O_TURN;
@@ -132,7 +138,7 @@ bool checkTie() {
 	return true;
 }
 
-bool wins() {
+bool wins() { // Check if someone has won or the game has ended through tie.
 	if(checkWin(X_MOVE)) {
 		cout << "X wins!" << endl;
 		xWins++;
