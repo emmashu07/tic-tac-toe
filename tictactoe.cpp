@@ -11,22 +11,21 @@ bool checkWin(int player);
 bool checkTie();
 bool wins();
 
-int board[3][3];
 const int X_TURN = 1;
 const int O_TURN = 2;
 const int BLANK = 0;
 const int X_MOVE = 1;
 const int O_MOVE = 2;
-int turn = X_TURN;
-int xWins = 0;
-int oWins = 0;
-char input[5];
-bool stillPlaying = true;
-char status[5];
-bool stop = false;
-
 
 int main() {
+	int turn = X_TURN;
+	int xWins = 0;
+	int oWins = 0;
+	char input[5];
+	bool stillPlaying = true;
+	char status[5];
+	bool stop = false;
+	int board[3][3];
 	printBoard();	
 	cout << "Welcome to Tic-Tac-Toe, enter a number, 1-3, followed by a letter, a-c, to begin." << endl;
 	while(stillPlaying) {
@@ -59,7 +58,7 @@ int main() {
 	return 0;
 }
 
-void printBoard() {
+void printBoard(int board[3][3]) {
 	cout << "\t1\t2\t3" << endl;
 	for(int i = 0; i < 3; i++) {	
 		cout << (char)('a' + i);	
@@ -79,7 +78,7 @@ void printBoard() {
 	}
 }
 
-void play() { // A turn.
+void play(int board[3][3], char input[]) { // A turn.
 	int second = (int)(input[0] - '1');
 	int first = (int)(input[1] - 'a');
 	if(board[first][second] == BLANK) { // Check if move is legal.
@@ -99,7 +98,7 @@ void play() { // A turn.
 	
 }
 
-bool checkWin(int player) {
+bool checkWin(int player, int board[3][3]) {
 	if(board[1][1] == player && board[0][0] == player && board[2][2] == player) {
 		return true;
 	}
@@ -127,7 +126,7 @@ bool checkWin(int player) {
 	return false;
 }
 
-bool checkTie() {
+bool checkTie(int board[3][3]) {
 	for(int row = 0; row < 3; row++) {
 		for(int column = 0; column < 3; column++) {
 		       if(board[row][column] == BLANK) {
