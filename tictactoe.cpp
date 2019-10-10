@@ -5,11 +5,12 @@ using namespace std;
 
 //Emma Shu, 10/3/2019: Console game of Tic-Tac-Toe, played against yourself.
 
-void printBoard();
-void play();
-bool checkWin(int player);
-bool checkTie();
-bool wins();
+void printBoard(int board[3][3]);
+void play(int board[3][3], char input[2], int &turn);
+bool checkWin(int player, int board[3][3]);
+bool checkTie(int board[3][3]);
+bool wins(int &xWins, int &oWins, int board[3][3]);
+void clearBoard(int board[3][3]);
 
 const int X_TURN = 1;
 const int O_TURN = 2;
@@ -26,7 +27,9 @@ int main() {
 	char status[5];
 	bool stop = false;
 	int board[3][3];
-	printBoard();	
+
+    clearBoard(board);
+	printBoard(board);    
 	cout << "Welcome to Tic-Tac-Toe, enter a number, 1-3, followed by a letter, a-c, to begin." << endl;
 	while(stillPlaying) {
 		while (!stop) {
@@ -35,8 +38,8 @@ int main() {
 				cout << "Please enter a number, 1-3, followed by a letter, a-c (e.g. 1a)" << endl; // Rejected conditions.
                 cin >> input;
 			}
-			play();
-			stop = wins(); // Once a win or tie occurs, move on.
+			play(board, input, turn);
+			stop = wins(xWins, oWins, board); // Once a win or tie occurs, move on.
 		}
 		cout << "Keep playing? Y/N" << endl;
 		cin >> status;
@@ -47,12 +50,8 @@ int main() {
 		if(status[0] == 'n' || status[0] == 'N') {
 			stillPlaying = false;
 		}	
-		for(int i = 0; i < 3; i++) {
-			for(int j = 0; j < 3; j++) {
-				board[i][j] = BLANK; // Reset board.
-			}
-		}
-		printBoard();
+		clearBoard(board);
+		printBoard(board);
 		stop = false;
 	}
 	return 0;
@@ -78,7 +77,7 @@ void printBoard(int board[3][3]) {
 	}
 }
 
-void play(int board[3][3], char input[]) { // A turn.
+void play(int board[3][3], char input[2], int &turn) { // A turn.
 	int second = (int)(input[0] - '1');
 	int first = (int)(input[1] - 'a');
 	if(board[first][second] == BLANK) { // Check if move is legal.
@@ -94,7 +93,7 @@ void play(int board[3][3], char input[]) { // A turn.
 	else {
 		cout << "There's a piece already there." << endl;
 	}
-	printBoard();	
+	printBoard(board);	
 	
 }
 
@@ -137,25 +136,31 @@ bool checkTie(int board[3][3]) {
 	return true;
 }
 
-bool wins() { // Check if someone has won or the game has ended through tie.
-	if(checkWin(X_MOVE)) {
+bool wins(int &xWins, int &oWins, int board[3][3]) { // Check if someone has won or the game has ended through tie.
+	if(checkWin(X_MOVE, board)) {
 		cout << "X wins!" << endl;
 		xWins++;
 		cout << "X has won " << xWins << " times." << endl;
 		return true;
 	}
-	else if(checkWin(O_MOVE)) {
+	else if(checkWin(O_MOVE, board)) {
 		cout << "O wins!" << endl;
 		oWins++;
 		cout << "O has won " << oWins << " times." << endl;
 		return true;
 	}
-	else if(checkTie()) {
+	else if(checkTie(board)) {
 		cout << "Tie!" << endl;
 		return true;
 	}
 	return false;
 }
 		
-
+void clearBoard(int board[3][3]) {
+    for(int i = 0; i < 3; i++) {
+        for(int j = 0; j < 3; j++) {
+            board[i][j] = BLANK;
+        }
+    }
+}
 
